@@ -8,21 +8,34 @@ const connect = mongoose.connect(url);
 connect.then((db) => {
   console.log(`connected correctly to serve`);
 
-  const newDish = Dishes({
-    name: '西红柿炒蛋',
-    description: 'test'
-  });
-
-  newDish.save()
+    Dishes.create({
+      name: '番茄牛腩fan',
+      description: 'test'
+    })
     .then((dish) => {
       console.log(dish);
-      
-      return Dishes.find({});
-    })
-    .then((dishes) => {
-      console.log(dishes);
 
-      return Dishes.remove({});
+      return Dishes.findByIdAndUpdate(dish._id, { //更新document
+        $set: { description: 'Update test'}
+      }, {
+        new: true
+      })
+      .exec();
+    })
+    .then((dish) => {                   //给关联schema添加数据
+      console.log(dish);
+
+      dish.comments.push({
+        rating: 5, 
+        comment: '不好吃',
+        author: '张祥'
+      });
+      return dish.save();
+    })
+    .then((dish) => { 
+      console.log(dish);
+
+      return Dishes.remove({});    //移除collections中的document
     })
     .then(() => {
       return mongoose.connection.close();
