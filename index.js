@@ -1,5 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
+const dboper = require('./operation');
 
 const url = 'mongodb://127.0.0.1:27017/ele';
 const dbname = 'newDatabase'        //默认建立数据库/或者连接数据库
@@ -11,22 +12,23 @@ MongoClient.connect(url, (err, client) => {
 
   const db = client.db(dbname);  //数据库名称
   const collection = db.collection('teas'); //数据库下的文档集合，默认连接该文档或者建立文档
-  collection.insertOne({"name": "六安瓜片", "description": "tea"}, (err, result) => { //文档下面插入文本
-    assert.equal(err, null);
+  dboper.insertDocument(db, {name: '张祥', description: 'Test'}, 'author', (result) => {
+    console.log('insert Document;\n', result.ops);
 
-    console.log('after Insert:\n');
-    console.log(result.ops);
+    dboper.findDocuments(db, 'author', (docs) => {
+      console.log('found Document:\n', docs);
 
-    collection.find({}).toArray((err, docs) => {  // 在文档集合下查找所有文本
-      assert.equal(err, null);
+      dboper.updateDocument(db, { name: '张祥'}, { name: '张灿', description: 'no test'}, 'author', (result) => { //将张祥对应的文本替换为张灿
+        console.log('update document:\n', result.result);
 
-      console.log('Found:\n');
-      console.log(docs);
+        dboper.findDocuments(db, 'author', (docs) => {
+          console.log('found updated document:\n', docs);
 
-      db.dropCollection('posts', (err, reslult) => {  // 删除文档集合
-        assert.equal(err, null);
-
-        client.close(); // 关闭数据库
+          db.dropCollection('author', (result) => {
+            console.log('dropped collection:', result);
+            client.close();
+          })
+        })
       })
     })
   })
