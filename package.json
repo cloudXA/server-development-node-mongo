@@ -19,6 +19,7 @@
   "homepage": "https://github.com/cloudXA/server-development-node-mongo#readme",
   "devDependencies": {
     "assert": "^2.0.0",
-    "mongodb": "^3.5.9"
+    "mongodb": "^3.5.9",
+    "mongoose": "^5.9.18"
   }
 }

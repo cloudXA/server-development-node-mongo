@@ -1,39 +1,33 @@
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
-const dboper = require('./operation');
+const mongoose = require('mongoose');
 
-const url = 'mongodb://127.0.0.1:27017/ele';
-const dbname = 'newDatabase'        //默认建立数据库/或者连接数据库
+const Dishes = require('./models/dishes');
 
+const url = 'mongodb://localhost:27017/conFusion'; // conFusion为collection，没有新建，有的话连接
+const connect = mongoose.connect(url);
 
-MongoClient.connect(url).then((client) => {
-  console.log('Connected correctly to server');
-  const db = client.db(dbname);
+connect.then((db) => {
+  console.log(`connected correctly to serve`);
 
-  dboper.insertDocument(db, { name: '张祥', description: 'test'}, 'author')
-    .then((result) => {
-      console.log('insert Document;\n', result.ops);
+  const newDish = Dishes({
+    name: '西红柿炒蛋',
+    description: 'test'
+  });
 
-      return dboper.findDocuments(db, 'author')
+  newDish.save()
+    .then((dish) => {
+      console.log(dish);
+      
+      return Dishes.find({});
     })
-    .then((docs) => {
-      console.log('found Document:\n', docs);
+    .then((dishes) => {
+      console.log(dishes);
 
-      return dboper.updateDocument(db, { name: '张祥'}, { name: '张灿', description: 'no test'}, 'author')
+      return Dishes.remove({});
     })
-    .then((result) => {
-      console.log('update document:\n', result.result);
-
-      return dboper.findDocuments(db, 'author')
+    .then(() => {
+      return mongoose.connection.close();
     })
-    .then((docs) => {
-      console.log('found updated document:\n', docs);
-
-      return db.dropCollection('author')
+    .catch((err) => {
+      console.log(err);
     })
-    .then((result) => {
-      console.log('dropped collection:', result);
-      client.close();
-    })
-
 })
