@@ -1,0 +1,24 @@
+{
+  "name": "node-mongo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cloudXA/server-development-node-mongo.git"
+  },
+  "author": "张祥",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cloudXA/server-development-node-mongo/issues"
+  },
+  "homepage": "https://github.com/cloudXA/server-development-node-mongo#readme",
+  "devDependencies": {
+    "assert": "^2.0.0",
+    "mongodb": "^3.5.9"
+  }
+}
